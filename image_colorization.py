@@ -23,7 +23,7 @@ tf.flags.DEFINE_float("learning_rate", "1e-4", "Learning rate for Adam Optimizer
 tf.flags.DEFINE_float("beta1", "0.9", "Beta 1 value to use in Adam Optimizer")
 tf.flags.DEFINE_string("model_dir", "Model_zoo/", "Path to vgg model mat")
 tf.flags.DEFINE_bool('debug', "False", "Debug mode: True/ False")
-tf.flags.DEFINE_string('mode', "test", "Mode train/ test")
+tf.flags.DEFINE_string('mode', "train", "Mode train/ test")
 
 MODEL_URL = 'http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat'
 
@@ -178,7 +178,7 @@ def main(argv=None):
 
             if itr % 10000 == 0:
                 FLAGS.learning_rate /= 2
-    elif FLAGS.mode == "test":
+    if FLAGS.mode == "train":
         count = 10
         l_image, color_images = batch_reader.get_random_batch(count)
         feed_dict = {images: l_image, lab_images: color_images, train_phase: False}
@@ -191,5 +191,3 @@ def main(argv=None):
 
 if __name__ == "__main__":
     tf.app.run()
-    tf.flags.DEFINE_string('mode', "train", "Mode train/ test")
-    main()
