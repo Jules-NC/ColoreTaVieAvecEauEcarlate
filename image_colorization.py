@@ -178,7 +178,7 @@ def main(argv=None):
 
             if itr % 10000 == 0:
                 FLAGS.learning_rate /= 2
-    elif FLAGS.mode == "test":
+    if FLAGS.mode == "train":
         count = 10
         l_image, color_images = batch_reader.get_random_batch(count)
         feed_dict = {images: l_image, lab_images: color_images, train_phase: False}
@@ -191,5 +191,3 @@ def main(argv=None):
 
 if __name__ == "__main__":
     tf.app.run()
-    tf.flags.DEFINE_string('mode', "train", "Mode train/ test")
-    main()
