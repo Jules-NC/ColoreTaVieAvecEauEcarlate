@@ -27,7 +27,7 @@ tf.flags.DEFINE_string('mode', "train", "Mode train/ test")
 
 MODEL_URL = 'http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat'
 
-MAX_ITERATION = int(1e2 + 1)
+MAX_ITERATION = int(1e4 + 1)
 IMAGE_SIZE = 128
 ADVERSARIAL_LOSS_WEIGHT = 1e-3
 
