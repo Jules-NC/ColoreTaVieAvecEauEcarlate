@@ -27,7 +27,7 @@ tf.flags.DEFINE_string('mode', "train", "Mode train/ test")
 
 MODEL_URL = 'http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat'
 
-MAX_ITERATION = int(3e3 + 1)
+MAX_ITERATION = int(0 + 1)
 IMAGE_SIZE = 128
 ADVERSARIAL_LOSS_WEIGHT = 1e-3
 
@@ -179,8 +179,9 @@ def main(argv=None):
             if itr % 10000 == 0:
                 FLAGS.learning_rate /= 2
     if FLAGS.mode == "train":
-        count = 10
+        count = 1
         l_image, color_images = batch_reader.get_random_batch(count)
+        print("/!\ TEST:\n", l_image.shape, " | ", color_images.shape)
         feed_dict = {images: l_image, lab_images: color_images, train_phase: False}
         save_dir = os.path.join(FLAGS.logs_dir, "image_pred")
         pred = sess.run(pred_image, feed_dict=feed_dict)
