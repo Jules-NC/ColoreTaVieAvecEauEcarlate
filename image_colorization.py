@@ -189,7 +189,7 @@ def main(argv=None):
                 FLAGS.learning_rate /= 2
 
     elif FLAGS.mode == "test":
-        count = 1
+        count = 15
         l_image, color_images = batch_reader.get_random_batch(count)
         print("/!\ TEST:", l_image.shape, color_images.shape)
         feed_dict = {images: l_image, lab_images: color_images, train_phase: False}
