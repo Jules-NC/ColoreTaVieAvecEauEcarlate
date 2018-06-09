@@ -14,6 +14,9 @@ import datetime
 import BatchDatsetReader as dataset
 from six.moves import xrange
 import os
+from PIL import Image
+from skimage.color import rgb2lab, lab2rgb
+
 
 FLAGS = tf.flags.FLAGS
 tf.flags.DEFINE_integer("batch_size", "16", "batch size for training")
@@ -23,11 +26,12 @@ tf.flags.DEFINE_float("learning_rate", "1e-4", "Learning rate for Adam Optimizer
 tf.flags.DEFINE_float("beta1", "0.9", "Beta 1 value to use in Adam Optimizer")
 tf.flags.DEFINE_string("model_dir", "Model_zoo/", "Path to vgg model mat")
 tf.flags.DEFINE_bool('debug', "False", "Debug mode: True/ False")
-tf.flags.DEFINE_string('mode', "train", "Mode train/ test")
+tf.flags.DEFINE_string('mode', "train", "Mode train / test / custom")
+tf.flags.DEFINE_string('filename', "testimage.jpg", "filename with[out] path")
 
 MODEL_URL = 'http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat'
 
-MAX_ITERATION = int(3e3 + 1)
+MAX_ITERATION = int(0 + 1)
 IMAGE_SIZE = 128
 ADVERSARIAL_LOSS_WEIGHT = 1e-3
 
@@ -178,9 +182,11 @@ def main(argv=None):
 
             if itr % 10000 == 0:
                 FLAGS.learning_rate /= 2
-    if FLAGS.mode == "train":
-        count = 10
+
+    if FLAGS.mode == "test":
+        count = 1
         l_image, color_images = batch_reader.get_random_batch(count)
+        print("/!\ TEST:", l_image.shape, color_images.shape)
         feed_dict = {images: l_image, lab_images: color_images, train_phase: False}
         save_dir = os.path.join(FLAGS.logs_dir, "image_pred")
         pred = sess.run(pred_image, feed_dict=feed_dict)
@@ -188,6 +194,29 @@ def main(argv=None):
             utils.save_image(color_images[itr], save_dir, "gt" + str(itr))
             utils.save_image(pred[itr].astype(np.float64), save_dir, "pred" + str(itr))
         print("--- Images saved on test run ---")
+
+    if FLAGS.mode == "custom":
+        l_image = PIL_to_lab(FLAGS.filename)
+        color_image = Image.open(FLAGS.filename)
+        color_image = rgb2lab(color_image)
+        color_image = np.expand_dims(color_image, axis=0)
+        feed_dict = {images: l_image, lab_images: color_image, train_phase: False}
+        save_dir = os.path.join(FLAGS.logs_dir, "image_pred")
+        pred = sess.run(pred_image, feed_dict=feed_dict)
+        for itr in range(1):
+            utils.save_image(color_image[itr], save_dir, "gt" + str(itr))
+            utils.save_image(pred[itr].astype(np.float64), save_dir, "pred" + str(itr))
+        print("--- Images saved on custom run ---")
+    
+
+
+def PIL_to_lab(filename):
+    image = Image.open(filename)
+    image = rgb2lab(image)
+    L = image[:, :, 0:1]
+    L = np.expand_dims(L, axis=0)
+    return L
+  
 
 if __name__ == "__main__":
     tf.app.run()
