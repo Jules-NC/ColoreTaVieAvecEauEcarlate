@@ -34,7 +34,7 @@ tf.flags.DEFINE_float('MSE_stop', "-100", "Stop when the MSE reach your stop val
 MODEL_URL = 'http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat'
 
 MAX_ITERATION = int(int(FLAGS.epochs)*50 + 1)
-IMAGE_SIZE = 512
+IMAGE_SIZE = 128
 ADVERSARIAL_LOSS_WEIGHT = 1e-3
 
 
