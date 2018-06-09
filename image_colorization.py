@@ -28,10 +28,11 @@ tf.flags.DEFINE_string("model_dir", "Model_zoo/", "Path to vgg model mat")
 tf.flags.DEFINE_bool('debug', "False", "Debug mode: True/ False")
 tf.flags.DEFINE_string('mode', "train", "Mode train / test / custom")
 tf.flags.DEFINE_string('filename', "testimage.jpg", "filename with[out] path")
+tf.flags.DEFINE_float('epochs', "100", "Number of epoch you want during training")
 
 MODEL_URL = 'http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat'
 
-MAX_ITERATION = int(0 + 1)
+MAX_ITERATION = int(int(FLAGS.epochs)*50 + 1)
 IMAGE_SIZE = 128
 ADVERSARIAL_LOSS_WEIGHT = 1e-3
 
