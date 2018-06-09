@@ -29,6 +29,7 @@ tf.flags.DEFINE_bool('debug', "False", "Debug mode: True/ False")
 tf.flags.DEFINE_string('mode', "train", "Mode train / test / custom")
 tf.flags.DEFINE_string('filename', "testimage.jpg", "filename with[out] path")
 tf.flags.DEFINE_float('epochs', "100", "Number of epoch you want during training")
+tf.flags.DEFINE_float('MSE_stop', "-100", "Stop when the MSE reach your stop value")
 
 MODEL_URL = 'http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat'
 
@@ -153,7 +154,7 @@ def main(argv=None):
     summary_op = tf.summary.merge_all()
     saver = tf.train.Saver()
     summary_writer = tf.summary.FileWriter(FLAGS.logs_dir, sess.graph)
-    sess.run(tf.initialize_all_variables())
+    sess.run(tf.global_variables_initializer())
 
     ckpt = tf.train.get_checkpoint_state(FLAGS.logs_dir)
     if ckpt and ckpt.model_checkpoint_path:
@@ -169,6 +170,9 @@ def main(argv=None):
                 mse, summary_str = sess.run([gen_loss_mse, summary_op], feed_dict=feed_dict)
                 summary_writer.add_summary(summary_str, itr)
                 print("Step: %d, MSE: %g" % (itr, mse))
+                if FLAGS.MSE_stop>mse:
+                    print("MSE is reachin stop value, training interrupted")
+                    break
 
             if itr % 100 == 0:
                 saver.save(sess, FLAGS.logs_dir + "model.ckpt", itr)
@@ -184,7 +188,7 @@ def main(argv=None):
             if itr % 10000 == 0:
                 FLAGS.learning_rate /= 2
 
-    if FLAGS.mode == "test":
+    elif FLAGS.mode == "test":
         count = 1
         l_image, color_images = batch_reader.get_random_batch(count)
         print("/!\ TEST:", l_image.shape, color_images.shape)
@@ -196,7 +200,7 @@ def main(argv=None):
             utils.save_image(pred[itr].astype(np.float64), save_dir, "pred" + str(itr))
         print("--- Images saved on test run ---")
 
-    if FLAGS.mode == "custom":
+    elif FLAGS.mode == "custom":
         l_image = PIL_to_lab(FLAGS.filename)
         color_image = Image.open(FLAGS.filename)
         color_image = rgb2lab(color_image)
