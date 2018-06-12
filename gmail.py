@@ -6,7 +6,7 @@ from io import BytesIO
 from time import sleep
 
 def colorize(path):
-	!python !python image_colorization.py --mode custom --filename path
+	!python image_colorization.py --mode custom --filename path
 	image = Image.open(logs/image_pred/pred0.png)
     return image
 
