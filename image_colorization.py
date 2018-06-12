@@ -209,6 +209,7 @@ def main(argv=None):
         save_dir = os.path.join(FLAGS.logs_dir, "image_pred")
         pred = sess.run(pred_image, feed_dict=feed_dict)
         for itr in range(1):
+            utils.save_image(color_image[itr], save_dir, "gt" + str(itr)) 
             utils.save_image(pred[itr].astype(np.float64), save_dir, "pred" + str(itr))
         print("--- Images saved on custom run ---")
     
