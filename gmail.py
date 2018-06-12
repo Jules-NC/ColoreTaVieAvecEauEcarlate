@@ -5,10 +5,8 @@ from PIL import Image
 from io import BytesIO
 from time import sleep
 
-def colorize(path):
-	!python image_colorization.py --mode custom --filename path
-	image = Image.open(logs/image_pred/pred0.png)
-    return image
+def colorize():
+	!python image_colorization.py --mode custom
 
 def PIL_to_bytes(image):
     with BytesIO() as output:
@@ -82,7 +80,13 @@ while True:
             except:
                 invalid += 1
                 continue
-            image = colorize(image)
+            image = image.convert('RGB')
+            image.save('testimage.jpeg', 'jpeg')
+            colorize()
+            image = Image.open('logs/image_pred/pred0.png')
+            image = image.convert('RGB')
+            !rm testimage.jpeg
+            !rm logs/image_pred/pred0.png
             ans.add_attachment(PIL_to_bytes(image),
                                maintype='image', subtype='jpeg',
                                filename=str(i) + '.jpeg')
