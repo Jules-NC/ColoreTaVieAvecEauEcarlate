@@ -27,7 +27,7 @@ tf.flags.DEFINE_float("beta1", "0.9", "Beta 1 value to use in Adam Optimizer")
 tf.flags.DEFINE_string("model_dir", "Model_zoo/", "Path to vgg model mat")
 tf.flags.DEFINE_bool('debug', "False", "Debug mode: True/ False")
 tf.flags.DEFINE_string('mode', "train", "Mode train / test / custom")
-tf.flags.DEFINE_string('filename', "testimage.jpg", "filename with[out] path")
+tf.flags.DEFINE_string('filename', "testimage.jpeg", "filename with[out] path")
 tf.flags.DEFINE_float('epochs', "100", "Number of epoch you want during training")
 tf.flags.DEFINE_float('MSE_stop', "-100", "Stop when the MSE reach your stop value")
 
@@ -209,7 +209,6 @@ def main(argv=None):
         save_dir = os.path.join(FLAGS.logs_dir, "image_pred")
         pred = sess.run(pred_image, feed_dict=feed_dict)
         for itr in range(1):
-            utils.save_image(color_image[itr], save_dir, "gt" + str(itr))
             utils.save_image(pred[itr].astype(np.float64), save_dir, "pred" + str(itr))
         print("--- Images saved on custom run ---")
     
