@@ -8,7 +8,7 @@ import glob
 
 import TensorflowUtils as utils
 
-DATA_URL = 'http://memorability.csail.mit.edu/lamem.tar.gz'
+DATA_URL = 'https://perso.esiee.fr/~neghnagj/lamem.tar.gz'
 
 
 def read_dataset(data_dir):
